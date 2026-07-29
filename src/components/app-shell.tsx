@@ -12,14 +12,14 @@ export function AppShell() {
   const ready = useSessionBootstrap();
   useSessionSync();
   const onboardingDone = useSessionStore((s) => s.onboardingDone);
-      const activeSession = useSessionStore((s) =>
-        s.sessions.find((x) => x.id === s.activeSessionId) ?? null,
-      );
+  const activeSession = useSessionStore(
+    (s) => s.sessions.find((x) => x.id === s.activeSessionId) ?? null,
+  );
 
   if (!ready) {
     return (
       <div className="flex h-screen items-center justify-center text-sm text-muted">
-        加载会话…
+        加载工作区…
       </div>
     );
   }
@@ -31,13 +31,13 @@ export function AppShell() {
         <SessionSidebar />
         <section
           className="flex h-[45vh] min-h-0 w-full flex-col border-b border-panel-border bg-background md:h-full md:min-w-0 md:flex-1 md:border-b-0 md:border-r"
-          aria-label="Chat"
+          aria-label="Agent chat"
         >
           {onboardingDone && activeSession ? (
-            <ChatPanel key={activeSession.id} session={activeSession} />
+            <ChatPanel key={`${activeSession.id}-${activeSession.syncKey}`} session={activeSession} />
           ) : (
             <div className="flex flex-1 items-center justify-center text-sm text-muted">
-              完成引导后开始对话
+              完成初始化后开始创建
             </div>
           )}
         </section>
@@ -46,7 +46,10 @@ export function AppShell() {
           aria-label="Canvas preview"
         >
           {activeSession ? (
-            <CanvasPreview preview={activeSession.preview} />
+            <CanvasPreview
+              preview={activeSession.preview}
+              session={activeSession}
+            />
           ) : null}
         </section>
       </main>

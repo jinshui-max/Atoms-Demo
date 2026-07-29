@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Atoms-Demo",
-  description: "Chat-driven canvas preview — Atoms-style interaction",
+  title: "Atoms-Demo · AI Agent 产品工作台",
+  description:
+    "智能体驱动的应用生成：规划、批准、生成可交互网页并实时预览迭代",
 };
 
 export default function RootLayout({

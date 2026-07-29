@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, FolderOpen } from "lucide-react";
+import { FolderOpen, Plus, Trash2 } from "lucide-react";
 import { useSessionStore } from "@/store/session-store";
 
 export function SessionSidebar() {
@@ -10,27 +10,35 @@ export function SessionSidebar() {
   const setActiveSession = useSessionStore((s) => s.setActiveSession);
   const deleteSession = useSessionStore((s) => s.deleteSession);
   const onboardingDone = useSessionStore((s) => s.onboardingDone);
+  const profile = useSessionStore((s) => s.profile);
 
   if (!onboardingDone) return null;
 
   return (
     <aside
-      className="flex h-full w-full min-h-0 flex-col border-b border-panel-border bg-[#0c0c0e] md:h-full md:w-52 md:shrink-0 md:border-b-0 md:border-r"
-      aria-label="会话列表"
+      className="flex h-full w-full min-h-0 flex-col border-b border-panel-border bg-[#0c0c0e] md:h-full md:w-56 md:shrink-0 md:border-b-0 md:border-r"
+      aria-label="项目列表"
     >
-      <div className="flex items-center justify-between border-b border-panel-border px-3 py-3">
-        <div className="flex items-center gap-2 text-xs font-medium text-muted">
-          <FolderOpen className="size-4" />
-          我的会话
+      <div className="border-b border-panel-border px-3 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-medium text-muted">
+            <FolderOpen className="size-4" />
+            我的项目
+          </div>
+          <button
+            type="button"
+            onClick={() => createSession()}
+            className="rounded-md p-1.5 text-muted hover:bg-panel hover:text-foreground"
+            title="新建项目"
+          >
+            <Plus className="size-4" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => createSession()}
-          className="rounded-md p-1.5 text-muted hover:bg-panel hover:text-foreground"
-          title="新建会话"
-        >
-          <Plus className="size-4" />
-        </button>
+        {profile && (
+          <p className="mt-2 truncate text-[11px] text-muted">
+            工作区 · {profile.displayName}
+          </p>
+        )}
       </div>
       <ul className="min-h-0 flex-1 overflow-y-auto p-2">
         {sessions.map((s) => {
@@ -46,16 +54,20 @@ export function SessionSidebar() {
               >
                 <button
                   type="button"
-                  className="min-w-0 flex-1 truncate text-left"
+                  className="min-w-0 flex-1 text-left"
                   onClick={() => setActiveSession(s.id)}
                 >
-                  {s.title}
+                  <div className="truncate font-medium">{s.title}</div>
+                  <div className="mt-0.5 text-[10px] opacity-70">
+                    {phaseLabel(s.phase)}
+                    {s.versions.length > 0 ? ` · ${s.versions.length} 版` : ""}
+                  </div>
                 </button>
                 <button
                   type="button"
                   className="shrink-0 rounded p-1 opacity-0 hover:text-red-400 group-hover:opacity-100"
                   onClick={() => deleteSession(s.id)}
-                  title="删除会话"
+                  title="删除项目"
                 >
                   <Trash2 className="size-3.5" />
                 </button>
@@ -66,4 +78,23 @@ export function SessionSidebar() {
       </ul>
     </aside>
   );
+}
+
+function phaseLabel(phase: string): string {
+  switch (phase) {
+    case "awaiting_approval":
+      return "待批准";
+    case "planning":
+      return "规划中";
+    case "building":
+      return "生成中";
+    case "iterating":
+      return "迭代中";
+    case "ready":
+      return "已就绪";
+    case "error":
+      return "出错";
+    default:
+      return "草稿";
+  }
 }
