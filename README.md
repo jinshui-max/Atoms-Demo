@@ -10,7 +10,7 @@
 
 | 项 | 说明 |
 |----|------|
-| **Demo URL** | `https://你的项目.vercel.app`（部署后替换） |
+| **Demo URL** | https://atoms-demo-steel.vercel.app/ |
 | **测试账号** | 无需注册；首次打开填写显示名即可进入工作区 |
 
 ### 评审自测清单（约 5 分钟）
